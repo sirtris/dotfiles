@@ -190,3 +190,12 @@ export EDITOR="emacs -nw"
 export VISUAL="emacs -nw"
 export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+
+# "faster" way to open single files in emacs
+function e() {
+  # Get the current tmux session name, or default to "global" if not in tmux
+  local session_name=$(tmux display-message -p '#S' 2>/dev/null || echo "global")
+  
+  # Connect to a daemon named after the tmux session, starting it if necessary
+  uv run --dev emacsclient --socket-name="$session_name" -a "" -nw "$@"
+}
